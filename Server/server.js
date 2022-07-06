@@ -25,7 +25,7 @@ app.use(express.urlencoded({extended:true, limit: '5000kb'}))
 // DATABASE CONNECTION HANDLE
 async function connexion(){
     try{
-        await mongoose.connect('mongodb+srv://Josue:ZPDkwP6Am0oT6DaE@nuxt-josue.lh9lgtd.mongodb.net/Popups?retryWrites=true&w=majority')
+        await mongoose.connect("mongodb+srv://Josue:8Fto1kA9AdrseYv7@nuxt-josue.lh9lgtd.mongodb.net/Popups?retryWrites=true&w=majority")
         console.log("DB connected")
     }catch(e){
         console.log(e.message)
