@@ -54,7 +54,9 @@ app.post("/login",async(req,res)=>{
             // if(typeof req.headers.cookie == "string")
             // console.log(cookie.parse(req.headers.cookie))
             res.json({_id:admin._id,username:admin.username,token:admin.token})
-        }  
+        }else{
+            res.end();
+        }
     })
  
 })
