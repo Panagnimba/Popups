@@ -55,7 +55,6 @@ app.post("/login",async(req,res)=>{
             // console.log(cookie.parse(req.headers.cookie))
             res.json({_id:admin._id,username:admin.username,token:admin.token})
         }  
-        res.json("not exist")
     })
  
 })
