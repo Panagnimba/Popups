@@ -33,7 +33,7 @@ async function connexion(){
 }
 connexion()
 // LOGIN FOR THE ADMINISTRATOR
-app.post("/login2",async(req,res)=>{
+app.post("/login",async(req,res)=>{
    let admin = {}
    AdminModel.findOne({username:req.body.username,password:req.body.password},async (error,result)=>{
         if(error) throw error.message
