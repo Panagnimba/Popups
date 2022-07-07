@@ -1,3 +1,5 @@
+const DEV = process.env.NODE_ENV !== 'production'
+
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -39,6 +41,9 @@ export default {
   modules: [
     "@nuxtjs/axios",
   ],
+  axios: {
+    baseURL: DEV ? '' : 'https://josue-nuxt.herokuapp.com/'
+  },
   serverMiddleware:['~/Server/server.js'],
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {

@@ -45,6 +45,9 @@ export default {
       password: "",
     };
   },
+  mounted() {
+    console.log(process.env.PORT);
+  },
   methods: {
     async handleLogin() {
       const user = {
