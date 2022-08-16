@@ -45,9 +45,7 @@ export default {
       password: "",
     };
   },
-  mounted() {
-    console.log(process.env.PORT);
-  },
+
   methods: {
     async handleLogin() {
       const user = {
@@ -57,7 +55,7 @@ export default {
       //  EFFACER LES CHAMPS INPUTS
       (this.username = ""), (this.password = "");
       //   SEND THE REQUEST TO LOGIN
-      let response = await this.$axios.post(`./login`, user);
+      let response = await this.$axios.post("/login", user);
       if (response.status == 200 && response.data.token != null) {
         // AUTHENTICATE USER IN THE STORE
         this.$store.commit("setAuthUser", response.data);

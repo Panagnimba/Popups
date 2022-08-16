@@ -47,6 +47,32 @@
           <i class="fa-brands fa-hive"></i>
           <span v-if="rightSize == '48'">Manage</span>
         </div>
+        <div
+          :class="this.rightItemStyle"
+          @click="selectMenu($event)"
+          title="Emailing"
+        >
+          <i class="fa-solid fa-envelopes-bulk"></i>
+          <span v-if="rightSize == '48'">Emailing</span>
+        </div>
+        <!-- history -->
+        <div
+          :class="this.rightItemStyle"
+          @click="selectMenu($event)"
+          title="History"
+        >
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          <span v-if="rightSize == '48'">History</span>
+        </div>
+        <!-- Chart -->
+        <div
+          :class="this.rightItemStyle"
+          @click="selectMenu($event)"
+          title="Graphics"
+        >
+          <i class="fa-solid fa-chart-line"></i>
+          <span v-if="rightSize == '48'">Graphics</span>
+        </div>
       </div>
       <div class="h-1/2 w-full flex flex-col justify-end items-start gap-5">
         <div :class="this.rightItemStyle" @click="selectMenu($event)">
@@ -106,7 +132,7 @@
           >
             <div class="flex items-center gap-3">
               <i class="fa-solid fa-users"></i>
-              <div class="">87</div>
+              <div class="">{{ this.nbreReceivers }}</div>
               <span>Receivers</span>
             </div>
           </button>
@@ -115,7 +141,7 @@
           >
             <div class="flex items-center gap-3">
               <i class="fa-solid fa-users"></i>
-              <div class="">87</div>
+              <div class="">{{ this.nbreReceivers }}</div>
               <span>Receivers</span>
             </div>
           </button>
@@ -151,6 +177,10 @@ export default {
     let resp = await this.$axios.get("/getDashboardInfo");
     this.nbreUser = resp.data.nbreUser;
     this.nbrePopup = resp.data.nbrePopup;
+    this.nbreReceivers = resp.data.nbreReceivers;
+    // Initialize the default email configuration
+    // with informations get from database
+    this.$store.dispatch("setDefault", resp.data.defaultEmailConfig);
   },
   mounted() {
     this.$refs.popups.click();
@@ -167,6 +197,7 @@ export default {
       // HEADER INFOS
       nbreUser: 0,
       nbrePopup: 0,
+      nbreReceivers: 0,
     };
   },
   methods: {
@@ -184,6 +215,7 @@ export default {
       if (this.isloggin == true) this.loginText = "Logout";
       else this.loginText = "login";
 
+      window.localStorage.clear();
       //   location.assign("/admin");
       this.$router.push("/login");
     },
@@ -213,6 +245,12 @@ export default {
 
       if (activeMenu.title.toLowerCase().includes("manager"))
         this.mainComponent = "manage-popup";
+      if (activeMenu.title.toLowerCase().includes("emailing"))
+        this.mainComponent = "mail-template";
+      if (activeMenu.title.toLowerCase().includes("history"))
+        this.mainComponent = "history";
+      if (activeMenu.title.toLowerCase().includes("graphics"))
+        this.mainComponent = "graphic-component";
     },
     // HANDLE THE EVENT FROM CAROUSEL COMPONENT
     // WHEN A POPUP IS SELECTED FOR MANAGE

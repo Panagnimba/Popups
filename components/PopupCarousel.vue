@@ -65,45 +65,65 @@ export default {
       ],
     };
   },
-  watch: {
-    isSwiperLoaded() {
-      if (this.isSwiperLoaded)
-        new Swiper(".mySwiper", {
-          slidesPerView: this.nbre,
-          spaceBetween: 20,
-          slidesPerGroup: 1,
-          loop: true,
-          autoplay: {
-            delay: 2500,
-            disableOnInteraction: true,
-          },
-          // loopFillGroupWithBlank: true,
-          pagination: {
-            el: ".swiper-pagination",
-            clickable: true,
-          },
-          navigation: {
-            nextEl: ".swiper-button-next",
-            prevEl: ".swiper-button-prev",
-          },
-          on: {
-            init() {
-              this.el.addEventListener("mouseenter", () => {
-                this.autoplay.stop();
-              });
+  mounted() {
+    // Handle the number of items(popup) to show
+    // depending on the screen size
+    if (window.innerWidth < 800) this.nbre = 1;
+    else if (window.innerWidth >= 800 && window.innerWidth < 1000)
+      this.nbre = 2;
+    else if (window.innerWidth > 1200) this.nbre = 3;
 
-              this.el.addEventListener("mouseleave", () => {
-                this.autoplay.start();
-              });
-            },
-          },
-        });
+    window.addEventListener("resize", (e) => {
+      if (e.target.innerWidth < 800) this.nbre = 1;
+      else if (e.target.innerWidth >= 800 && e.target.innerWidth < 1000)
+        this.nbre = 2;
+      else if (e.target.innerWidth > 1200) this.nbre = 3;
+      this.createSwiperInstance();
+      console.log(e.target.innerWidth);
+    });
+  },
+  watch: {
+    isSwiperLoaded(newValue) {
+      if (newValue) this.createSwiperInstance();
       document.querySelectorAll(".btn").forEach((btn) => {
         btn.addEventListener("click", this.selectPopup);
       });
     },
   },
   methods: {
+    // methods for create the swiper instance
+    createSwiperInstance() {
+      new Swiper(".mySwiper", {
+        slidesPerView: this.nbre,
+        spaceBetween: 20,
+        slidesPerGroup: 1,
+        loop: true,
+        autoplay: {
+          delay: 2500,
+          disableOnInteraction: true,
+        },
+        // loopFillGroupWithBlank: true,
+        pagination: {
+          el: ".swiper-pagination",
+          clickable: true,
+        },
+        navigation: {
+          nextEl: ".swiper-button-next",
+          prevEl: ".swiper-button-prev",
+        },
+        on: {
+          init() {
+            this.el.addEventListener("mouseenter", () => {
+              this.autoplay.stop();
+            });
+
+            this.el.addEventListener("mouseleave", () => {
+              this.autoplay.start();
+            });
+          },
+        },
+      });
+    },
     selectPopup(e) {
       if (e.target.classList.contains("selected")) {
         // emit event to change the main content
@@ -123,15 +143,17 @@ export default {
           (popup) => popup._id == e.target.id
         );
         this.$store.dispatch("setCurrentPopup", selectedpopup);
+        // notifification
+        this.$store.dispatch("addNotification", {
+          type: "success",
+          message: "Popup selected",
+        });
       }
     },
   },
 };
 </script>
 <style scoped>
-.mySwiper {
-  z-index: 300;
-}
 .selected {
   background-color: red;
 }

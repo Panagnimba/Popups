@@ -348,7 +348,18 @@ export default {
       console.log("update btn");
       console.log(this.currentConfig);
       let resp = await this.$axios.post("/updatePopup", this.currentConfig);
-      alert(resp.data);
+      // notification
+      if (resp.status == 200) {
+        this.$store.dispatch("addNotification", {
+          type: "success",
+          message: "Successfuly updated",
+        });
+      } else {
+        this.$store.dispatch("addNotification", {
+          type: "error",
+          message: "Update fails",
+        });
+      }
     },
     getEditorContent() {
       return tinymce.activeEditor.getContent();

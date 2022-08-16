@@ -4,8 +4,12 @@
       class="bg-white rounded-xl absolute shadow-xl border"
       :class="[this.position, this.size]"
     >
-      <div class="close absolute right-4 cursor-pointer text-2xl">
-        <span>&times;</span>
+      <!-- CLOSE BTN -->
+      <div
+        @click="closePopup"
+        class="w-5 h-5 flex justify-center items-center absolute top-0 right-0 text-3xl text-white cursor-default bg-red-700 p-1"
+      >
+        &times;
       </div>
       <div class="flex gap-5 px-4">
         <div class="w-1/3">
@@ -16,15 +20,7 @@
           />
         </div>
         <div class="col justify-center flex-wrap w-2/3 gap-2 mt-3">
-          <!-- <div class="col self-start">
-            <div class="text-md self-start">Don't miss out</div>
-            <div class="font-bold text-2xl self-start">Newsletter</div>
-          </div>
-          <p class="mr-4 text-justify">
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dicta
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dicta
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dicta
-          </p> -->
+          <!--  -->
           <div v-html="this.config.description"></div>
         </div>
       </div>
@@ -108,15 +104,45 @@ export default {
         email: this.email,
         name: this.name,
         phone: this.phone,
+        createAt: new Date().toLocaleString(),
       };
 
-      let res = await this.$axios.post("/registerUser", user);
-      if (res.status == 200 && !res.data == "") {
-        this.email = "";
-        this.name = "";
-        this.phone = "";
-        alert("succeees");
+      let regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+      if (regexEmail.test(user.email)) {
+        let res = await this.$axios.post("/registerUser", user);
+        if (res.status == 200 && !res.data == "") {
+          this.email = "";
+          this.name = "";
+          this.phone = "";
+          // notif
+          this.$store.dispatch("addNotification", {
+            type: "success",
+            message: "Informations save",
+          });
+          // SET COOKIE to avoid showing the popup
+          //multiple time on the same user when reefressing
+          this.setCookie("fill", true, 0);
+          // close the popup
+          this.closePopup();
+        } else {
+          this.$store.dispatch("addNotification", {
+            type: "info",
+            message: "Please try again",
+          });
+        }
       }
+    },
+    setCookie(name, value, days = 1) {
+      var expires = "";
+      if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+        expires = "; expires=" + date.toUTCString();
+      }
+      document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    },
+    closePopup() {
+      this.$emit("closePopup");
     },
   },
 };
